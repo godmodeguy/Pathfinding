@@ -4,6 +4,15 @@ import numpy as np
 from pathfinder import PathFinder, Node
 
 
+ALL_NODES = []
+class GridNode(Node):
+    def __init__(self, pos):
+        Node.__init__(self)
+
+        self.pos = f'({pos[0]}:{pos[1]})'
+        ALL_NODES.append(self)
+
+
 class PathfindingGUI:
     START_COLOR = (0, 200, 0)
     TARGET_COLOR = (200, 0, 0)
@@ -40,11 +49,43 @@ class PathfindingGUI:
             self.clock.tick(20)
     
     def create_graph(self):
-        return 1, 1, 1
+
+        init_node = GridNode((0, 0))
+
+        node_l1 = GridNode((0, 1))
+        node_l1.add_neighbour(init_node, self.grid[1, 0])
+
+        node_r1 = init_node
+        node_r2 = GridNode((1, 0))
+        node_r2.add_neighbour(node_r1, self.grid[0, 0])
+
+        for x in range(1, self.grid.shape[0]-1):
+            for y in range(1, self.grid.shape[1]-1):
+                node_r1.add_neighbour(node_r2, self.grid[x, y+1])
+                node_r2.add_neighbour(node_r1, self.grid[x, y])
+                node_r1 = node_r2
+                node_r2 = GridNode((x, y))
+
+                node_l1.add_neighbour(node_r2, self.grid[x+1, y])
+                node_l1 = GridNode((x+1, y))
+
+            t = node_r1
+            node_r1 = node_l1
+            node_r2 = GridNode((x, y))
+
+            node_l1 = GridNode((x, y))
+            node_l1.add_neighbour(t, self.grid[x+1, 0])
+
+        for node in ALL_NODES:
+            print(node.pos, 'neighbours:', ', '.join(n.pos for n in node.neighbours))
+
+        sys.exit()
+
+
 
     def find_path(self):
-        graph, start, end = self.create_graph()
-        path = self.finder.find(graph, start, end)
+        start, end = self.create_graph()
+        path = self.finder.find(start, end)
         self.path = self.path_to_grid(path)
 
     def path_to_grid(self, path):

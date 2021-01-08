@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ede8a4a6-65d8-4819-b2c9-df35dfebd1b4" name="Default Changelist" comment="" />
+    <list default="true" id="ede8a4a6-65d8-4819-b2c9-df35dfebd1b4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../Pathfinding/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Pathfinding/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Pathfinding/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Pathfinding/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Pathfinding/pathfinder.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Pathfinding/pathfinder.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../Pathfinding" />
+  </component>
   <component name="ProjectId" id="1mo31flvbaNurlnvz4lkgZSXsPp" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Pathfinding/main.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Pathfinding" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
@@ -151,13 +159,33 @@
       <screen x="0" y="0" width="1920" height="1035" />
     </state>
     <state x="424" y="176" width="1071" height="708" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1035@0.0.1920.1035" timestamp="1610146027017" />
-    <state x="747" y="288" key="FileChooserDialogImpl" timestamp="1610146025648">
+    <state x="747" y="288" key="FileChooserDialogImpl" timestamp="1610146403685">
       <screen x="0" y="0" width="1920" height="1035" />
     </state>
-    <state x="747" y="288" key="FileChooserDialogImpl/0.0.1920.1035@0.0.1920.1035" timestamp="1610146025648" />
-    <state x="838" y="418" key="Github.ShareDialog" timestamp="1610146224639">
+    <state x="747" y="288" key="FileChooserDialogImpl/0.0.1920.1035@0.0.1920.1035" timestamp="1610146403685" />
+    <state x="838" y="418" key="Github.ShareDialog" timestamp="1610146477511">
       <screen x="0" y="0" width="1920" height="1035" />
     </state>
-    <state x="838" y="418" key="Github.ShareDialog/0.0.1920.1035@0.0.1920.1035" timestamp="1610146224638" />
+    <state x="838" y="418" key="Github.ShareDialog/0.0.1920.1035@0.0.1920.1035" timestamp="1610146477511" />
+    <state x="782" y="217" key="Github.UntrackedFilesDialog" timestamp="1610146493718">
+      <screen x="0" y="0" width="1920" height="1035" />
+    </state>
+    <state x="782" y="217" key="Github.UntrackedFilesDialog/0.0.1920.1035@0.0.1920.1035" timestamp="1610146493718" />
+    <state width="1897" height="273" key="GridCell.Tab.0.bottom" timestamp="1610149600350">
+      <screen x="0" y="0" width="1920" height="1035" />
+    </state>
+    <state width="1897" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1035@0.0.1920.1035" timestamp="1610149600350" />
+    <state width="1897" height="273" key="GridCell.Tab.0.center" timestamp="1610149600349">
+      <screen x="0" y="0" width="1920" height="1035" />
+    </state>
+    <state width="1897" height="273" key="GridCell.Tab.0.center/0.0.1920.1035@0.0.1920.1035" timestamp="1610149600349" />
+    <state width="1897" height="273" key="GridCell.Tab.0.left" timestamp="1610149600349">
+      <screen x="0" y="0" width="1920" height="1035" />
+    </state>
+    <state width="1897" height="273" key="GridCell.Tab.0.left/0.0.1920.1035@0.0.1920.1035" timestamp="1610149600349" />
+    <state width="1897" height="273" key="GridCell.Tab.0.right" timestamp="1610149600350">
+      <screen x="0" y="0" width="1920" height="1035" />
+    </state>
+    <state width="1897" height="273" key="GridCell.Tab.0.right/0.0.1920.1035@0.0.1920.1035" timestamp="1610149600350" />
   </component>
 </project>
