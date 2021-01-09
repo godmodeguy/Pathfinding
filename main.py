@@ -1,7 +1,7 @@
 import pygame
 import sys
 import numpy as np
-from pathfinder import PathFinder, Node
+from pathfinder import Node, bfs
 
 
 class GridNode(Node):
@@ -25,7 +25,6 @@ class PathfindingGUI:
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.finder = PathFinder()
 
         self.width, self.height = (1600, 800)
         self.bsize = 25
@@ -42,6 +41,10 @@ class PathfindingGUI:
 
     def mainloop(self):
         while True:
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                self.path = bfs(self.start, self.target)
+            else:
+                self.path = []
 
             self.keyboard_handle()
             self.mouse_handle()
@@ -71,9 +74,6 @@ class PathfindingGUI:
                 if y < self.width//self.bsize - 1:
                     self.grid[x, y].add_neighbour(self.grid[x, y+1], self.grid[x, y+1])
 
-    def find_path(self):
-        self.path = self.finder.find(self.start, self.target)
-
     def keyboard_handle(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -84,8 +84,6 @@ class PathfindingGUI:
                     self.create_grid()
                     self.start = self.grid[0, 0]
                     self.target = self.grid[0, 1]
-                if event.key == pygame.K_SPACE:
-                    self.find_path()
 
     def mouse_handle(self):
         if not pygame.mouse.get_focused():
