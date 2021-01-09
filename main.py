@@ -1,7 +1,7 @@
 import pygame
 import sys
 import numpy as np
-from pathfinder import Node, breadth_first_search, dijkstra_search
+from pathfinder import Node, breadth_first_search, dijkstra_search, A_star_search
 
 
 class GridNode(Node):
@@ -25,16 +25,14 @@ class PathfindingGUI:
 
     def __init__(self):
         pygame.init()
-        self.clock = pygame.time.Clock()
 
         self.width, self.height = (1600, 800)
         self.bsize = 25
         self.screen = pygame.display.set_mode((self.width, self.height))
 
         self.path = []
-        self.grid = None
+        self.grid = np.empty((self.height // self.bsize, self.width // self.bsize), dtype=object)
         self.create_grid()
-
         self.start = self.grid[0, 0]
         self.target = self.grid[0, 1]
 
@@ -44,8 +42,7 @@ class PathfindingGUI:
         while True:
             # clear path every frame, hold Space to instantly update
             if pygame.key.get_pressed()[pygame.K_SPACE]:
-                self.path = dijkstra_search(self.start, self.target)
-
+                self.path = A_star_search(self.start, self.target)
             else:
                 self.path = []
 
@@ -53,11 +50,7 @@ class PathfindingGUI:
             self.mouse_handle()
             self.render()
 
-            self.clock.tick(20)
-
     def create_grid(self):
-        self.grid = np.empty((self.height // self.bsize, self.width // self.bsize), dtype=object)
-
         # fill grid with nodes
         for x in range(self.grid.shape[0]):
             for y in range(self.grid.shape[1]):
@@ -85,6 +78,7 @@ class PathfindingGUI:
                     self.create_grid()
                     self.start = self.grid[0, 0]
                     self.target = self.grid[0, 1]
+                # mb more hotkeys
 
     def mouse_handle(self):
         if not pygame.mouse.get_focused():
@@ -104,7 +98,10 @@ class PathfindingGUI:
                 self.dragging_target = left
             return
 
-        if left:
+        if center:
+            # fast filling - mouse center for max weight, with ctrl for min
+            self.grid[x, y].weight = 0 if pygame.key.get_mods() & pygame.KMOD_CTRL else 10
+        elif left:
             # start dragging
             if (x, y) == self.start.position:
                 self.dragging_start = True
@@ -132,9 +129,9 @@ class PathfindingGUI:
 
         # draw path in a special way for transparency
         for node in self.path:
-            s = pygame.Surface((bs - 1, bs - 1), pygame.SRCALPHA)
-            s.fill(self.PATH_COLOR)
-            self.screen.blit(s, (node.position[1] * bs, node.position[0] * bs))
+            p = pygame.Surface((bs - 1, bs - 1), pygame.SRCALPHA)
+            p.fill(self.PATH_COLOR)
+            self.screen.blit(p, (node.position[1] * bs, node.position[0] * bs))
 
         # draw start cell
         pygame.draw.rect(self.screen, self.START_COLOR,

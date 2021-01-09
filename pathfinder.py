@@ -57,13 +57,20 @@ def breadth_first_search(start, end):
                 frontier.appendleft(neighbour)
                 came_from[neighbour] = current
 
-    if end not in came_from.keys():
-        # there's no way to end
-        return []
     return restore_path(came_from, start, end)
 
 
 def dijkstra_search(start, end):
+    A_star_search(start, end, lambda a, b: 0)
+
+
+def manhattan_norm(a, b):
+    (x1, y1) = a.position
+    (x2, y2) = a.position
+    return abs(x1 - x2) + abs(y1 - y2)
+
+
+def A_star_search(start, end, heuristic=manhattan_norm):
     frontier = PriorityQueue()
     frontier.put(start, 0)
     came_from = {start: None}
@@ -77,19 +84,20 @@ def dijkstra_search(start, end):
             break
 
         for neighbour in current.get_neighbours():
-            new_cost = cost[current] + neighbour.weight
+            new_cost = cost[current] + neighbour.weight + heuristic(end, neighbour)
             if neighbour not in cost or new_cost < cost[neighbour]:
                 cost[neighbour] = new_cost
                 frontier.put(neighbour, new_cost)
                 came_from[neighbour] = current
 
-    if end not in came_from.keys():
-        # there's no way to end
-        return []
     return restore_path(came_from, start, end)
 
 
 def restore_path(came_from, start, end):
+    if end not in came_from.keys():
+        # there's no way to end
+        return []
+
     path = []
     t = end
     while came_from[t] != start:
