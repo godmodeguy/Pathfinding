@@ -9,9 +9,7 @@ class PathFinder:
 
 class Node:
     def __init__(self):
-        self.neighbours = []
-        self.weights = []
+        self.neighbours = {}
 
     def add_neighbour(self, node, weight):
-        self.neighbours.append(node)
-        self.weights.append(weight)
+        self.neighbours[node] = weight
