@@ -1,7 +1,7 @@
 import pygame
 import sys
 import numpy as np
-from pathfinder import Node, breadth_first_search_c
+from pathfinder import Node, breadth_first_search, dijkstra_search
 
 
 class GridNode(Node):
@@ -26,7 +26,6 @@ class PathfindingGUI:
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.finder = breadth_first_search_c
 
         self.width, self.height = (1600, 800)
         self.bsize = 25
@@ -45,7 +44,8 @@ class PathfindingGUI:
         while True:
             # clear path every frame, hold Space to instantly update
             if pygame.key.get_pressed()[pygame.K_SPACE]:
-                self.path = self.finder(self.start, self.target, self.dfs_update)
+                self.path = dijkstra_search(self.start, self.target)
+
             else:
                 self.path = []
 
