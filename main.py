@@ -1,13 +1,14 @@
 import pygame
 import sys
 import numpy as np
-from pathfinder import Node, bfs
+from pathfinder import Node, breadth_first_search_c
 
 
 class GridNode(Node):
+    MAX_PASSABLE_WEIGHT = 9
+
     def __init__(self, position, weight):
-        Node.__init__(self)
-        self.weight = weight
+        Node.__init__(self, weight)
         self.position = position
 
     def __repr__(self):
@@ -18,13 +19,14 @@ class PathfindingGUI:
     START_COLOR = (0, 200, 0)
     TARGET_COLOR = (200, 0, 0)
     WEIGHT_COLOR = np.array((250, 250, 250))
-    PATH_COLOR = (0, 0, 200)
-    WEIGHT_FACTOR = 25
+    PATH_COLOR = (0, 0, 250, 40)  # fourth value for transparency
+    WEIGHT_FACTOR = 25  # step for changing cell color by weight
     INIT_WEIGHT = 3
 
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
+        self.finder = breadth_first_search_c
 
         self.width, self.height = (1600, 800)
         self.bsize = 25
@@ -41,16 +43,15 @@ class PathfindingGUI:
 
     def mainloop(self):
         while True:
+            # clear path every frame, hold Space to instantly update
             if pygame.key.get_pressed()[pygame.K_SPACE]:
-                self.path = bfs(self.start, self.target)
+                self.path = self.finder(self.start, self.target, self.dfs_update)
             else:
                 self.path = []
 
             self.keyboard_handle()
             self.mouse_handle()
             self.render()
-
-            self.path = []  # clear path every frame, hold Space to instantly update
 
             self.clock.tick(20)
 
@@ -66,13 +67,13 @@ class PathfindingGUI:
         for x in range(self.grid.shape[0]):
             for y in range(self.grid.shape[1]):
                 if x > 0:
-                    self.grid[x, y].add_neighbour(self.grid[x-1, y], self.grid[x-1, y])
+                    self.grid[x, y].add_neighbour(self.grid[x-1, y])
                 if x < self.height//self.bsize - 1:
-                    self.grid[x, y].add_neighbour(self.grid[x+1, y], self.grid[x+1, y])
+                    self.grid[x, y].add_neighbour(self.grid[x+1, y])
                 if y > 0:
-                    self.grid[x, y].add_neighbour(self.grid[x, y-1], self.grid[x, y-1])
+                    self.grid[x, y].add_neighbour(self.grid[x, y-1])
                 if y < self.width//self.bsize - 1:
-                    self.grid[x, y].add_neighbour(self.grid[x, y+1], self.grid[x, y+1])
+                    self.grid[x, y].add_neighbour(self.grid[x, y+1])
 
     def keyboard_handle(self):
         for event in pygame.event.get():
@@ -129,10 +130,11 @@ class PathfindingGUI:
                 pygame.draw.rect(self.screen, list(map(int, color)),
                                  (y*bs, x*bs, bs-1, bs-1))
 
-        # draw path
+        # draw path in a special way for transparency
         for node in self.path:
-            pygame.draw.rect(self.screen, self.PATH_COLOR,
-                             (node.position[1] * bs, node.position[0] * bs, bs - 1, bs - 1))
+            s = pygame.Surface((bs - 1, bs - 1), pygame.SRCALPHA)
+            s.fill(self.PATH_COLOR)
+            self.screen.blit(s, (node.position[1] * bs, node.position[0] * bs))
 
         # draw start cell
         pygame.draw.rect(self.screen, self.START_COLOR,

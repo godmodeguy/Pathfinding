@@ -1,36 +1,31 @@
 from collections import deque
 
 
-class PathFinder:
-    def __init__(self):
-        pass
-
-    def find(self, start, end):
-        return [start, end]
-
-
 class Node:
-    def __init__(self):
-        self.neighbours = {}
+    MAX_PASSABLE_WEIGHT = float('inf')
 
-    def add_neighbour(self, node, weight):
-        self.neighbours[node] = weight
+    def __init__(self, weight):
+        self.neighbours = {}
+        self.weight = weight
+
+    def add_neighbour(self, node):
+        self.neighbours[node] = node.weight
 
     def get_neighbours(self):
-        return self.neighbours.keys()
+        return [n for n in self.neighbours.keys() if n.weight <= self.MAX_PASSABLE_WEIGHT]
 
 
-def bfs(start, end):
+def breadth_first_search_c(start, end):
     frontier = deque()
     frontier.appendleft(start)
     came_from = {start: None}
 
     while len(frontier):
         current = frontier.pop()
-        for next_ in current.get_neighbours():
-            if next_ not in came_from:
-                frontier.appendleft(next_)
-                came_from[next_] = current
+        for neighbour in current.get_neighbours():
+            if neighbour not in came_from:
+                frontier.appendleft(neighbour)
+                came_from[neighbour] = current
 
     path = []
     t = end
