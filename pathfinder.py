@@ -4,7 +4,7 @@ class PathFinder:
         pass
 
     def find(self, start, end):
-        pass
+        return [start, end]
 
 
 class Node:
@@ -13,3 +13,6 @@ class Node:
 
     def add_neighbour(self, node, weight):
         self.neighbours[node] = weight
+
+    def get_neighbours(self):
+        return self.neighbours.keys()

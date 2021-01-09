@@ -4,14 +4,14 @@ import numpy as np
 from pathfinder import PathFinder, Node
 
 
-ALL_NODES = []
 class GridNode(Node):
-    def __init__(self, pos, weight):
+    def __init__(self, position, weight):
         Node.__init__(self)
         self.weight = weight
+        self.position = position
 
-        self.pos = f'({pos[0]}:{pos[1]})'
-        ALL_NODES.append(self)
+    def __repr__(self):
+        return f'GridNode({self.position[0]}:{self.position[1]})'
 
 
 class PathfindingGUI:
@@ -31,12 +31,12 @@ class PathfindingGUI:
         self.bsize = 25
         self.screen = pygame.display.set_mode((self.width, self.height))
 
-        self.path = [(5, i) for i in range(10, 20)]
+        self.path = []
         self.grid = None
         self.create_grid()
 
-        self.start = (0, 0)
-        self.target = (0, 1)
+        self.start = self.grid[0, 0]
+        self.target = self.grid[0, 1]
 
         self.dragging_start = self.dragging_target = False
 
@@ -45,17 +45,21 @@ class PathfindingGUI:
 
             self.keyboard_handle()
             self.mouse_handle()
-            self.render()   
+            self.render()
+
+            self.path = []  # clear path every frame, hold Space to instantly update
 
             self.clock.tick(20)
 
     def create_grid(self):
         self.grid = np.empty((self.height // self.bsize, self.width // self.bsize), dtype=object)
 
+        # fill grid with nodes
         for x in range(self.grid.shape[0]):
             for y in range(self.grid.shape[1]):
                 self.grid[x, y] = GridNode((x, y), self.INIT_WEIGHT)
 
+        # creating links between grid nodes
         for x in range(self.grid.shape[0]):
             for y in range(self.grid.shape[1]):
                 if x > 0:
@@ -67,15 +71,8 @@ class PathfindingGUI:
                 if y < self.width//self.bsize - 1:
                     self.grid[x, y].add_neighbour(self.grid[x, y+1], self.grid[x, y+1])
 
-        for node in ALL_NODES:
-            print(node.pos, 'neighbours:', ', '.join(k.pos for (k, v) in node.neighbours.items()))
-
-
     def find_path(self):
-        pass
-
-    def path_to_grid(self, path):
-        return 1
+        self.path = self.finder.find(self.start, self.target)
 
     def keyboard_handle(self):
         for event in pygame.event.get():
@@ -83,9 +80,10 @@ class PathfindingGUI:
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c and pygame.key.get_mods() & pygame.KMOD_CTRL:
-                    self.fill_grid()
-                    self.start = (0, 0)
-                    self.target = (0, 1)
+                    # Ctrl+C - return to start state
+                    self.create_grid()
+                    self.start = self.grid[0, 0]
+                    self.target = self.grid[0, 1]
                 if event.key == pygame.K_SPACE:
                     self.find_path()
 
@@ -97,47 +95,54 @@ class PathfindingGUI:
         y, x = pygame.mouse.get_pos()
         y, x = y // self.bsize, x // self.bsize
 
+        # drag and drop start and target
         if self.dragging_start or self.dragging_target:
             if self.dragging_start:
-                self.start = x, y
+                self.start = self.grid[x, y]
                 self.dragging_start = left
             else:
-                self.target = x, y
+                self.target = self.grid[x, y]
                 self.dragging_target = left
             return
 
         if left:
-            # drag and drop start and target
-            if (x, y) == self.start:
+            # start dragging
+            if (x, y) == self.start.position:
                 self.dragging_start = True
-            elif (x, y) == self.target:
+            elif (x, y) == self.target.position:
                 self.dragging_target = True
 
+            # increase weight when holding left button on cell
             elif self.grid[x, y].weight < 10:
                 self.grid[x, y].weight += 1
 
         elif right:
+            # decrease weight when holding right button on cell
             if self.grid[x, y].weight > 0:
                 self.grid[x, y].weight -= 1
 
     def render(self):
         bs = self.bsize
 
+        # draw grid
         for x in range(self.grid.shape[0]):
             for y in range(self.grid.shape[1]):
                 color = self.WEIGHT_COLOR - self.grid[x, y].weight * self.WEIGHT_FACTOR
                 pygame.draw.rect(self.screen, list(map(int, color)),
                                  (y*bs, x*bs, bs-1, bs-1))
 
-        for (x, y) in self.path:
+        # draw path
+        for node in self.path:
             pygame.draw.rect(self.screen, self.PATH_COLOR,
-                             (y * bs, x * bs, bs - 1, bs - 1))
+                             (node.position[1] * bs, node.position[0] * bs, bs - 1, bs - 1))
 
+        # draw start cell
         pygame.draw.rect(self.screen, self.START_COLOR,
-                         (self.start[1] * bs, self.start[0] * bs, bs - 1, bs - 1))
+                         (self.start.position[1] * bs, self.start.position[0] * bs, bs - 1, bs - 1))
 
+        # draw target cell
         pygame.draw.rect(self.screen, self.TARGET_COLOR,
-                         (self.target[1] * bs, self.target[0] * bs, bs - 1, bs - 1))
+                         (self.target.position[1] * bs, self.target.position[0] * bs, bs - 1, bs - 1))
 
         pygame.display.flip()
 
